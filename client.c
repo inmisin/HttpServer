@@ -10,12 +10,20 @@
 int ping(char *ip)
 {
     int fd = socket(AF_INET, SOCK_STREAM, 0);
-    
+    if(fd < 0)
+    {
+        perror("Socket couldnt open");
+        return -1;
+    }
 
     struct sockaddr_in req;
     req.sin_family = AF_INET;
     req.sin_port = htons(PORT);
-    inet_pton(AF_INET, ip, &req.sin_addr);
+    if(inet_pton(AF_INET, ip, &req.sin_addr) <= 0)
+    {
+        close(fd);
+        return -1;
+    }
 
     int res = connect(fd, (struct sockaddr *)&req, sizeof(req));
 

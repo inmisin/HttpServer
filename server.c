@@ -8,21 +8,6 @@
 
 #define PORT 6161
 
-
-int ping(int fd, char* ip)
-{
-    struct sockaddr_in req;
-    req.sin_family = AF_INET;
-    req.sin_port = htons(PORT);
-    inet_pton(AF_INET, ip, &req.sin_addr.s_addr);
-    
-    int res = connect(fd, (struct sockaddr *)&req, sizeof(req));
-
-    return res;
-}
-
-
-
 int main()
 {
     int sock_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -45,19 +30,6 @@ int main()
     
     while (1)
     {
-        printf("Waiting for request ... \n");
-      
-        if (ping(sock_fd, "192.168.1.1") >= 0)
-        {
-            printf("Successful \n");
-        }
-        else
-        {
-            printf("Nah \n");
-        }
-        
-
-        /*
         int new_socket = accept(sock_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen);
         if(new_socket < 0)
         {
@@ -67,7 +39,7 @@ int main()
 
         printf("Connected!\n");
         close(new_socket);
-        */
+        
         sleep(1);
     }
     
