@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -32,9 +33,11 @@ int main()
     // adresin dinlenmesi, bağlanmadan doğrudan dinlenme yapılamaz!
     listen(sock_fd,3);
     
-    char resBuffer[1024] = "HTTP/1.1 200 OK \r\nContent-Type: text/html; charset=utf-8 \r\n\r\nMerhaba!";
-
+    char resBuffer[1024] = "HTTP/1.1 200 OK \r\n Content-Type: text/html; charset=utf-8 \r\n\r\n<h1>Merhaba!<h1>";
+    char reqBuffer[1024];
     
+    char notfoundBuffer[1024] = "HTTP/1.1 404 Not Found \r\n";
+
     while (1)
     {
         int new_socket = accept(sock_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen);
@@ -43,8 +46,16 @@ int main()
             printf("Could not accept the request!");
             continue;
         }
-        
-        write(new_socket, resBuffer, 1024);
+        read(new_socket, reqBuffer, sizeof(reqBuffer));
+        if(strstr(reqBuffer, "GET / HTTP/1.1") != NULL)
+        {
+            write(new_socket, resBuffer, strlen(resBuffer));
+        }
+        else
+        {
+            write(new_socket, notfoundBuffer, strlen(notfoundBuffer));
+        }
+
         printf("Connected!\n");
         close(new_socket);
         
