@@ -7,6 +7,8 @@
 
 #define PORT 6161
 
+// didnt started!!!!
+
 int ping(char *ip)
 {
     int fd = socket(AF_INET, SOCK_STREAM, 0);

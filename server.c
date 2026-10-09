@@ -24,9 +24,16 @@ int main()
     
     int addrlen = sizeof(address);
 
-    bind(sock_fd, (struct sockaddr *)&address, addrlen);
+    // adrese bağlanma
+    if(bind(sock_fd, (struct sockaddr *)&address, addrlen) < 0)
+    {
+        return 1;
+    }
+    // adresin dinlenmesi, bağlanmadan doğrudan dinlenme yapılamaz!
     listen(sock_fd,3);
     
+    char resBuffer[1024] = "HTTP/1.1 200 OK \r\nContent-Type: text/html; charset=utf-8 \r\n\r\nMerhaba!";
+
     
     while (1)
     {
@@ -36,7 +43,8 @@ int main()
             printf("Could not accept the request!");
             continue;
         }
-
+        
+        write(new_socket, resBuffer, 1024);
         printf("Connected!\n");
         close(new_socket);
         
